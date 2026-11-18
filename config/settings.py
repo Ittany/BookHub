@@ -24,14 +24,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Terceros
     'django_extensions',
-    # Locales
     'catalogo',
     'cuentas',
 ]
 
 MIDDLEWARE = [
+    'catalogo.middleware.CSPMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -39,7 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'catalogo.middleware.AuditoriaMiddleware',   # ← NUEVO
+    'catalogo.middleware.AuditoriaMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -110,11 +109,19 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # ---------------------------------------------------------------
-# Sesiones (Fase 4 ajustará cookies seguras)
+# FASE 4 - Sesiones y cookies seguras
 # ---------------------------------------------------------------
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 60 * 60 * 2   # 2 horas
+SESSION_COOKIE_AGE = 60 * 60 * 2
 SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+X_FRAME_OPTIONS = 'DENY'
 # ---------------------------------------------------------------
 # FASE 4 — Sesiones y cookies seguras
 # ---------------------------------------------------------------
@@ -133,16 +140,22 @@ SESSION_COOKIE_SECURE = False
 X_FRAME_OPTIONS = 'DENY'
 
 # ---------------------------------------------------------------
-# Logging de auditoría
+# Logging de auditoría (Fase 4)
 # ---------------------------------------------------------------
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'audit': {'format': '[{asctime}] {levelname} {message}', 'style': '{'},
+        'audit': {
+            'format': '[{asctime}] {levelname} {message}',
+            'style': '{',
+        },
     },
     'handlers': {
-        'console': {'class': 'logging.StreamHandler', 'formatter': 'audit'},
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'audit',
+        },
         'file': {
             'class': 'logging.FileHandler',
             'filename': BASE_DIR / 'audit.log',

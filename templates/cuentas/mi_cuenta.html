@@ -1,11 +1,15 @@
 {% extends "base.html" %}
+{% block title %}Mi cuenta - BookHub{% endblock %}
 {% block content %}
 <h1>Mi cuenta</h1>
 <p>Usuario: <strong>{{ user.username }}</strong></p>
-<p>Grupos: {{ user.groups.all|join:", "|default:"—" }}</p>
-<p>Staff: {{ user.is_staff }} · Superuser: {{ user.is_superuser }}</p>
+<p>Email: {{ user.email|default:"-" }}</p>
+<p>Grupos:
+    {% for g in user.groups.all %}{{ g.name }}{% if not forloop.last %}, {% endif %}{% empty %}-{% endfor %}
+</p>
+<p>Staff: {{ user.is_staff }} | Superuser: {{ user.is_superuser }}</p>
 <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
-    <button class="btn">Cerrar sesión</button>
+    <button class="btn" type="submit">Cerrar sesión</button>
 </form>
 {% endblock %}

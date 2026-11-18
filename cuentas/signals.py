@@ -8,7 +8,10 @@ from catalogo.models import Libro
 
 @receiver(post_migrate)
 def crear_grupos_roles(sender, **kwargs):
-    """Crea (idempotente) los roles bibliotecario y lector tras cada migrate."""
+    """
+    Crea (idempotente) los grupos bibliotecario y lector tras cada migrate.
+    Se ejecuta también en el primer migrate para asegurar que existan.
+    """
     if sender.name != 'cuentas':
         return
 
@@ -22,7 +25,7 @@ def crear_grupos_roles(sender, **kwargs):
     )
     biblio.permissions.set(perms_biblio)
 
-    # Lector: solo puede ver libros
+    # Lector: solo lectura
     lector, _ = Group.objects.get_or_create(name='lector')
     perm_view = Permission.objects.filter(content_type=ct_libro, codename='view_libro')
     lector.permissions.set(perm_view)

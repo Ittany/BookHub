@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% block title %}Zona de creación - BookHub{% endblock %}
 {% block content %}
 <h1>Zona de creación</h1>
-<p>Solo usuarios con <code>catalogo.add_libro</code> ven esto.</p>
+<p>Solo usuarios con el permiso <code>catalogo.add_libro</code> ven esta página.</p>
+<p><a href="{% url 'catalogo:crear_libro' %}">Ir al formulario de creación</a></p>
 {% endblock %}

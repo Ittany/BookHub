@@ -1,11 +1,24 @@
 {% extends "base.html" %}
+{% block title %}Panel bibliotecario - BookHub{% endblock %}
 {% block content %}
 <h1>Panel bibliotecario</h1>
-<p>Acceso restringido a <code>catalogo.change_libro</code>.</p>
+<p>Acceso restringido al permiso <code>catalogo.change_libro</code>.</p>
+{% if libros %}
 <table>
-    <tr><th>Título</th><th>Autor</th><th>Disponibles</th></tr>
+    <thead>
+        <tr><th>Título</th><th>Autor</th><th>Disponibles</th></tr>
+    </thead>
+    <tbody>
     {% for l in libros %}
-        <tr><td>{{ l.titulo }}</td><td>{{ l.autor }}</td><td>{{ l.disponibles }}</td></tr>
+        <tr>
+            <td>{{ l.titulo }}</td>
+            <td>{{ l.autor }}</td>
+            <td>{{ l.disponibles }}/{{ l.stock_total }}</td>
+        </tr>
     {% endfor %}
+    </tbody>
 </table>
+{% else %}
+<p>No hay libros registrados todavía.</p>
+{% endif %}
 {% endblock %}

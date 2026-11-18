@@ -1,23 +1,19 @@
-# Entorno virtual
 venv/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Django
 *.sqlite3
 db.sqlite3
 *.log
+audit.log
 staticfiles/
 media/
 
-# Secretos
 .env
 
-# IDE / OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
-audit.log

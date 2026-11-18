@@ -1,9 +1,5 @@
-from django.apps import AppConfig
+from django.db import models  # noqa: F401
 
-class CuentasConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'cuentas'
-
-    def ready(self):
-        # Importar para registrar signal handlers
-        from . import signals  # noqa: F401
+# BookHub usa el modelo User nativo de django.contrib.auth.
+# Este archivo queda vacío intencionalmente; los roles se implementan
+# con Groups + Permissions en cuentas/signals.py.
