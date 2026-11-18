@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Contacto avanzado — BookHub{% endblock %}
+{% block content %}
+<h1>Contacto (demo de validación multi-nivel)</h1>
+
+{# Equivalente a {{ form.errors }} — TODOS los errores incluidos non_field_errors #}
+{% if form.errors %}
+    <div style="background:#fee2e2;padding:1rem;border-radius:6px;margin-bottom:1rem;">
+        <strong>❌ Errores globales (form.errors):</strong>
+        <pre style="white-space:pre-wrap;">{{ form.errors }}</pre>
+
+        <strong>❌ Errores no asociados a campo (non_field_errors):</strong>
+        <ul>{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+{% endif %}
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="field">
+            {{ field.label_tag }}{{ field }}
+            {% if field.errors %}
+                <ul class="errorlist">
+                    {% for e in field.errors %}<li>{{ e }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button class="btn" type="submit">Enviar</button>
+</form>
+
+<hr>
+<h3>🧪 Pruebas manuales</h3>
+<ol>
+  <li>Envía vacío → errores por campo (required).</li>
+  <li>Nombre: <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> → el sanitize lo deja como <code>scriptalert1script</code>.</li>
+  <li>Email: <code>MiEmail@Ejemplo.COM</code> → se guarda como <code>miemail@ejemplo.com</code>.</li>
+  <li>Asunto: <code>abc</code> → 2 errores (longitud + &lt;&gt;).</li>
+  <li>No marcar checkbox → aparece en <strong>non_field_errors</strong>.</li>
+  <li>Mensaje que repita tu nombre → error en el campo mensaje.</li>
+</ol>
+{% endblock %}

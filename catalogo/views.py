@@ -68,3 +68,14 @@ def detalle_libro(request, pk):
         pk=pk,
     )
     return render(request, 'catalogo/detalle_libro.html', {'libro': libro})
+from .forms import RegistroAvanzadoForm
+
+def contacto_avanzado(request):
+    if request.method == 'POST':
+        form = RegistroAvanzadoForm(request.POST)
+        if form.is_valid():
+            messages.success(request, 'Formulario válido y sanitizado ✅')
+            return redirect('catalogo:contacto_avanzado')
+    else:
+        form = RegistroAvanzadoForm()
+    return render(request, 'catalogo/contacto_avanzado.html', {'form': form})

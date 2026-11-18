@@ -144,3 +144,54 @@ class BusquedaLibroForm(forms.Form):
         if q and len(q) < 2:
             raise ValidationError('El término debe tener al menos 2 caracteres.')
         return q
+    # ---------------------------------------------------------------
+# FASE 2 — Demostración de sanitización y errores múltiples
+# ---------------------------------------------------------------
+class RegistroAvanzadoForm(forms.Form):
+    """
+    Formulario de contacto/búsqueda avanzada que demuestra:
+      - Multi-error con ValidationError (lista)
+      - add_error() con campo y sin campo
+      - strip(), lower(), escape() aplicados explícitamente
+    """
+    nombre_contacto = forms.CharField(max_length=80)
+    email_contacto = forms.EmailField()
+    asunto = forms.CharField(max_length=120)
+    mensaje = forms.CharField(widget=forms.Textarea(attrs={'rows': 5}))
+    acepta_politica = forms.BooleanField()
+
+    # ----- Nivel 1: sanitización por campo -----
+    def clean_nombre_contacto(self):
+        v = sanitize_input(self.cleaned_data['nombre_contacto']).lower()
+        if len(v) < 3:
+            raise ValidationError('El nombre debe tener al menos 3 caracteres.')
+        return v
+
+    def clean_email_contacto(self):
+        # lower() normaliza (los emails son case-insensitive en la práctica)
+        return self.cleaned_data['email_contacto'].strip().lower()
+
+    def clean_asunto(self):
+        v = sanitize_input(self.cleaned_data['asunto'])
+        # Multi-error en un solo raise
+        errores = []
+        if len(v) < 5:
+            errores.append('El asunto debe tener al menos 5 caracteres.')
+        if '<' in v or '>' in v:
+            errores.append('El asunto no puede contener < >.')
+        if errores:
+            raise ValidationError(errores)
+        return v
+
+    # ----- Nivel 2: cross-field con add_error -----
+    def clean(self):
+        cleaned = super().clean()
+        if not cleaned.get('acepta_politica'):
+            # add_error sin campo → va a non_field_errors
+            self.add_error(None, 'Debes aceptar la política de privacidad.')
+
+        # Ejemplo: add_error a un campo específico si el mensaje ya existe
+        if 'nombre_contacto' in cleaned and 'mensaje' in cleaned:
+            if cleaned['nombre_contacto'].lower() in cleaned['mensaje'].lower():
+                self.add_error('mensaje', 'El mensaje no debería repetir tu nombre.')
+        return cleaned
