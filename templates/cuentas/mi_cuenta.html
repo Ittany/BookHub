@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Mi cuenta</h1>
+<p>Usuario: <strong>{{ user.username }}</strong></p>
+<p>Grupos: {{ user.groups.all|join:", "|default:"—" }}</p>
+<p>Staff: {{ user.is_staff }} · Superuser: {{ user.is_superuser }}</p>
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button class="btn">Cerrar sesión</button>
+</form>
+{% endblock %}

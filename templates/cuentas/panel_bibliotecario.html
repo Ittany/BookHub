@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Panel bibliotecario</h1>
+<p>Acceso restringido a <code>catalogo.change_libro</code>.</p>
+<table>
+    <tr><th>Título</th><th>Autor</th><th>Disponibles</th></tr>
+    {% for l in libros %}
+        <tr><td>{{ l.titulo }}</td><td>{{ l.autor }}</td><td>{{ l.disponibles }}</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
