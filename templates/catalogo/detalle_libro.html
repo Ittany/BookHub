@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ libro.titulo }} — BookHub{% endblock %}
+
+{% block content %}
+<h1>{{ libro.titulo }}</h1>
+<p><strong>Autor:</strong> {{ libro.autor.nombre_completo }}</p>
+<p><strong>Año:</strong> {{ libro.anio_publicacion }} · <strong>Páginas:</strong> {{ libro.paginas }}</p>
+<p><strong>ISBN:</strong> {{ libro.isbn }}</p>
+<p><strong>Disponibles:</strong> {{ libro.disponibles }} / {{ libro.stock_total }}</p>
+<p><strong>Categorías:</strong>
+    {% for c in libro.categoria.all %}{{ c.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}
+</p>
+{% if libro.sinopsis %}<p>{{ libro.sinopsis }}</p>{% endif %}
+
+<a href="{% url 'catalogo:lista_libros' %}">← Volver al catálogo</a>
+{% endblock %}

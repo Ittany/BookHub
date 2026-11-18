@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Nuevo libro — BookHub{% endblock %}
+
+{% block content %}
+<h1>Registrar nuevo libro</h1>
+
+{# 1) Errores globales (no asociados a un campo) #}
+{% if form.non_field_errors %}
+    <ul class="errorlist">
+        {% for err in form.non_field_errors %}<li>{{ err }}</li>{% endfor %}
+    </ul>
+{% endif %}
+
+<form method="post" novalidate>
+    {% csrf_token %}                {# obligatorio en POST #}
+
+    {# 2) Render rápido campo a campo (equivalente a {{ form.as_p }}) #}
+    {% for field in form %}
+        <div class="field">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+                <ul class="errorlist">
+                    {% for err in field.errors %}<li>{{ err }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+            {% if field.help_text %}
+                <p class="helptext">{{ field.help_text }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button class="btn" type="submit">💾 Guardar</button>
+    <a href="{% url 'catalogo:lista_libros' %}" style="margin-left:1rem;">Cancelar</a>
+</form>
+
+<hr>
+<h2 style="font-size:1rem; color:#64748b;">Para comparar: {{ "{{ form.as_p }}" }} genera lo mismo de arriba</h2>
+{% endblock %}

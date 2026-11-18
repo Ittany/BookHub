@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Catálogo — BookHub{% endblock %}
+
+{% block content %}
+<h1>Catálogo ({{ total }} libros)</h1>
+
+{# Formulario clásico con GET: NO lleva csrf_token porque no modifica nada #}
+<form method="get" style="background:#f1f5f9; padding:1rem; border-radius:6px; margin-bottom:1.5rem;">
+    {{ form.as_p }}
+    <button class="btn" type="submit">🔍 Buscar</button>
+    <a href="{% url 'catalogo:lista_libros' %}" style="margin-left:1rem;">Limpiar</a>
+</form>
+
+{% if libros %}
+<table>
+    <thead>
+        <tr><th>Título</th><th>Autor</th><th>Año</th><th>Disponibles</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for libro in libros %}
+        <tr>
+            <td>{{ libro.titulo }}</td>
+            <td>{{ libro.autor.nombre_completo }}</td>
+            <td>{{ libro.anio_publicacion }}</td>
+            <td>{{ libro.disponibles }}/{{ libro.stock_total }}</td>
+            <td><a href="{% url 'catalogo:detalle_libro' libro.pk %}">Ver</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No hay libros que coincidan con la búsqueda.</p>
+{% endif %}
+{% endblock %}
